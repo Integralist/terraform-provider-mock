@@ -26,7 +26,7 @@ func Provider() *schema.Provider {
 			// Naming format...
 			//
 			// Map key: <provider>_<thing>
-			// File:    resource_<thing>.go
+			// File:    resource_<provider>_<thing>.go
 			//
 			// NOTE:
 			// The map key is what's documented as the 'thing' a consumer of this
@@ -40,7 +40,7 @@ func Provider() *schema.Provider {
 			// Naming format...
 			//
 			// Map key: <provider>_<thing>
-			// File:    data_source_<thing>.go
+			// File:    data_source_<provider>_<thing>.go
 			//
 			// NOTE:
 			// The map key is what's documented as the 'thing' a consumer of this
