@@ -20,17 +20,32 @@ func resourceExample() *schema.Resource {
 		Delete: resourceDelete,
 
 		// Resource Schema
+		//
+		// NOTE:
+		// You must specify either 'optional', 'required', or 'computed' and the
+		// value needs to be set to boolean 'true'.
+		//
+		// Reference:
+		// https://www.terraform.io/docs/extend/schemas/schema-types.html
 		Schema: map[string]*schema.Schema{
 			"last_updated": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"not_computed_optional": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"not_computed_required": {
+				Type:     schema.TypeString,
+				Required: true,
 			},
 			// This attribute is 'required' meaning the consumer of this provider
 			// will need to define the values expected when writing their terraform
 			// HCL code.
 			"foo": {
 				Type:     schema.TypeList,
-				Required: true,
+				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bar": {
@@ -39,6 +54,10 @@ func resourceExample() *schema.Resource {
 							Required: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
+									"number": {
+										Type:     schema.TypeInt,
+										Optional: true,
+									},
 									"version": {
 										Type:     schema.TypeString,
 										Computed: true,
@@ -47,6 +66,86 @@ func resourceExample() *schema.Resource {
 							},
 						},
 					},
+				},
+			},
+			/*
+				foo example:
+
+				resource "mock_example" "testing" {
+					foo {
+						bar {
+							number = 1
+						}
+					}
+				  foo {
+						bar {
+							number = 2
+						}
+					}
+					foo {
+						bar {
+							number = 3
+						}
+					}
+				}
+
+				OR
+
+				resource "mock_example" "testing" {
+					dynamic "foo" {
+						for_each = [{ number = 1 }, { number = 2 }, { number = 3 }]
+						content {
+							bar {
+								number = foo.value.number
+							}
+						}
+					}
+				}
+			*/
+			"baz": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"qux": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+					},
+				},
+			},
+			/*
+				baz example:
+
+				resource "mock_example" "testing" {
+					baz {
+						qux = "x"
+					}
+					baz {
+						qux = "y"
+					}
+					baz {
+						qux = "z"
+					}
+				}
+
+				OR
+
+				resource "mock_example" "testing" {
+					dynamic "baz" {
+						for_each = [{ qux = "x" }, { qux = "y" }, { qux = "z" }]
+						content {
+							qux = baz.value.qux
+						}
+					}
+				}
+			*/
+
+			"some_list": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
 		},
