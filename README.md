@@ -108,6 +108,16 @@ This error is expected because we've not actually published this provider to the
 
 > NOTE: don't use Print functions from the `fmt` package in the terraform provider as depending on the execution flow terraform can treat it as input to its internal program and treat it as an error. So use Print functions from the `log` package instead.
 
+## Terraform Execution Flow
+
+When there is no terraform state file, then terraform won't execute any CRUD functions.
+
+On the initial `terraform apply` you'll find CREATE is called first but what happens from there depends on how your provider works. For example, fastly and aws both call UPDATE at the end of the CREATE, where in this mock provider I call READ instead.
+
+Once a terraform state file has been created, and you make a change to your terraform configuration file, you'll find the first operation called when running `terraform plan` is READ. This is because terraform wants to get the latest version of your infrastructure to compare against what you have defined locally in your configuration.
+
+If you run `terraform apply` to ensure your changes are applied, then you'll find the first operation called by terraform is a READ. This is because if you don't have `terraform plan` set to save the 'execution plan' using the `-o` flag, then terraform is going to go off and get the latest data it can (you'll have noticed this as you would have had to type in "yes" manually to force the changes to be applied). After the READ, terraform calls UPDATE and what follows that is typically a READ because that's what most terraform providers do in their UPDATE crud function logic.
+
 ## Example Terraform Consumer Code
 
 Below are two code files you can use to validate how to use this provider in its current form:
