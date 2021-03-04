@@ -106,6 +106,8 @@ that release, which might help you address this problem.
 
 This error is expected because we've not actually published this provider to the terraform registry, so indeed it cannot be found. But the error doesn't prevent you from consuming the local provider binary still.
 
+> NOTE: don't use Print functions from the `fmt` package in the terraform provider as depending on the execution flow terraform can treat it as input to its internal program and treat it as an error. So use Print functions from the `log` package instead.
+
 ## Example Terraform Consumer Code
 
 Below are two code files you can use to validate how to use this provider in its current form:
