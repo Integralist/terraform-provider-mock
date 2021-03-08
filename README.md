@@ -40,7 +40,17 @@ terraform {
 }
 ```
 
-> NOTE: when developing your own provider, remember not just to update the `source` value but also the parent key (in this case `mock`). I've forgotten to do this in the past and had it confuse me for hours because it's such a subtle thing to miss.
+> NOTE: when developing your own provider, remember not just to update the `source` value but also the parent key (in this case `mock`). I've forgotten to do this in the past and had it confuse me for hours because it's such a subtle thing to miss. 
+
+## Linting a Provider
+
+There is no official tool but `tfproviderlint` is written by a HashiCorp software engineer and has been used on many projects so is worth installing:
+
+```bash
+go install github.com/bflad/tfproviderlint/cmd/tfproviderlintx@latest
+```
+
+> NOTE: I suggest installing the 'extended' binary (notice `x` at the end of the name).
 
 ## How to use this provider
 
