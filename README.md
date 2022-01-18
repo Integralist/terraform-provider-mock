@@ -118,6 +118,15 @@ This error is expected because we've not actually published this provider to the
 
 > NOTE: don't use Print functions from the `fmt` package in the terraform provider as depending on the execution flow terraform can treat it as input to its internal program and treat it as an error. So use Print functions from the `log` package instead.
 
+## Debugging a Terraform Provider
+
+There are essentially two approaches:
+
+1. Log-Based Debugging
+2. Debugger-Based Debugging. 
+
+Refer to the [official Hashicorp plugin documentation](https://www.terraform.io/plugin/sdkv2/debugging) and also the [Fastly Terraform provider](https://github.com/fastly/terraform-provider-fastly#debugging-the-provider) documents and demonstrates the latter approach.
+
 ## Terraform Execution Flow
 
 When there is no terraform state file, then terraform won't execute any CRUD functions.
