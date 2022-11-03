@@ -19,6 +19,16 @@ In summary: if you have an API (or you are a user of an existing API), then you 
 
 This is quite literally a _skeleton_ repo. It's intentionally designed that way. Most tutorials online teach the details of a terraform provider by first implementing an API backend, but I personally find this an unnecessary mental hurdle. So I have avoided that in favour of heavily commented code that explains what you need to do, when, and why. This makes it easier for you to strip out what you don't want.
 
+## Terraform Execution Flow
+
+When there is no terraform state file, then terraform won't execute any CRUD functions.
+
+On the initial `terraform apply` you'll find CREATE is called first but what happens from there depends on how your provider works. For example, fastly and aws both call UPDATE at the end of the CREATE, where in this mock provider I call READ instead.
+
+Once a terraform state file has been created, and you make a change to your terraform configuration file, you'll find the first operation called when running `terraform plan` is READ. This is because terraform wants to get the latest version of your infrastructure to compare against what you have defined locally in your configuration.
+
+If you run `terraform apply` to ensure your changes are applied, then you'll find the first operation called by terraform is a READ. This is because if you don't have `terraform plan` set to save the 'execution plan' using the `-out` flag, then terraform is going to go off and get the latest data it can (you'll have noticed this as you would have had to type in "yes" manually to force the changes to be applied). After the READ, terraform calls UPDATE and what follows that is typically a READ because that's what most terraform providers do in their UPDATE function logic.
+
 ## Requirements for creating a terraform provider
 
 1. Provider code
@@ -126,16 +136,6 @@ There are essentially two approaches:
 2. Debugger-Based Debugging. 
 
 Refer to the [official Hashicorp plugin documentation](https://www.terraform.io/plugin/sdkv2/debugging) and also the [Fastly Terraform provider](https://github.com/fastly/terraform-provider-fastly#debugging-the-provider) documents and demonstrates the latter approach.
-
-## Terraform Execution Flow
-
-When there is no terraform state file, then terraform won't execute any CRUD functions.
-
-On the initial `terraform apply` you'll find CREATE is called first but what happens from there depends on how your provider works. For example, fastly and aws both call UPDATE at the end of the CREATE, where in this mock provider I call READ instead.
-
-Once a terraform state file has been created, and you make a change to your terraform configuration file, you'll find the first operation called when running `terraform plan` is READ. This is because terraform wants to get the latest version of your infrastructure to compare against what you have defined locally in your configuration.
-
-If you run `terraform apply` to ensure your changes are applied, then you'll find the first operation called by terraform is a READ. This is because if you don't have `terraform plan` set to save the 'execution plan' using the `-out` flag, then terraform is going to go off and get the latest data it can (you'll have noticed this as you would have had to type in "yes" manually to force the changes to be applied). After the READ, terraform calls UPDATE and what follows that is typically a READ because that's what most terraform providers do in their UPDATE function logic.
 
 ## Example Terraform Consumer Code
 
