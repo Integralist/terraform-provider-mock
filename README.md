@@ -70,20 +70,25 @@ To consume this provider without it being published to the terraform registry, f
   ```bash
   make build
   ```
-- Create a separate directory for your own terraform project (e.g. `/example-tf`).
-- Create a `dev.tfrc` file in your terraform directory:
+- Create a separate directory for your own terraform project.
+  - e.g. `cd ../ && mkdir example-tf`
+- Create a `dev.tfrc` file in your own terraform project's directory:
   ```tf
   provider_installation {
     dev_overrides {
-      "integralist/mock" = "/path/to/terraform-provider-mock" // wherever the binary is.
+      "integralist/mock" = "../terraform-provider-mock" // the directory where the binary was built.
     }
     direct {}
   }
   ```
-- Set `TF_CLI_CONFIG_FILE` environment variable (e.g. `export TF_CLI_CONFIG_FILE=/example-tf/dev.tfrc`).
-- Initialize your terraform project and then execute a plan (`terraform init && terraform plan`). 
+- In that shell instance set the `TF_CLI_CONFIG_FILE` environment variable.
+  - e.g. `export TF_CLI_CONFIG_FILE=/example-tf/dev.tfrc`
+- Create terraform project files.
+  - e.g. see [Example Terraform Consumer Code](#example-terraform-consumer-code) below.
+- Initialize your terraform project and then execute a plan.
+  - e.g. `terraform init && terraform plan` 
 
-> NOTE: every time you make a change to the terraform provider code, you'll need to rebuild the binary and then go to your consuming terraform project and reinitialize (i.e. `terraform init`) so it picks up the latest version of the `terraform-provider-mock` binary.
+> **NOTE**: every time you make a change to the terraform provider code, you'll need to rebuild the binary and then go to your consuming terraform project and reinitialize (i.e. `terraform init`) so it picks up the latest version of the `terraform-provider-mock` binary.
 
 ## Local Development
 
