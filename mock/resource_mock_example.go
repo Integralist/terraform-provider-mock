@@ -157,7 +157,7 @@ func resourceExample() *schema.Resource {
 // won't set anything in the terraform state, with the exception of setting a
 // unique ID that will be used by all the other functions to access the
 // resource data from state.
-func resourceCreate(d *schema.ResourceData, m interface{}) error {
+func resourceCreate(d *schema.ResourceData, m any) error {
 	log.Print("\n\n--- CREATE ---\n\n")
 	log.Printf("\n\n>>> schema.ResourceData: %+v\n\n", d)
 	log.Printf("\n\n>>> meta data: %+v\n\n", m)
@@ -167,7 +167,7 @@ func resourceCreate(d *schema.ResourceData, m interface{}) error {
 	//
 	// c := m.(*some.APIClient)
 
-	foo := d.Get("foo").([]interface{})
+	foo := d.Get("foo").([]any)
 	log.Printf(">>> foo: %+v (%T)\n", foo, foo)
 
 	// We could do things with foo, e.g. loop over its elements and build up a
@@ -204,11 +204,11 @@ func resourceCreate(d *schema.ResourceData, m interface{}) error {
 // The READ operation must handle three things: calling out to the API to get
 // the latest version of our resource, and to flatten the returned API response
 // (or at least extract the values we need) and marshal the data into a format
-// that terraform understands (i.e. map[string]interface{}). Lastly it will set
+// that terraform understands (i.e. map[string]any). Lastly it will set
 // the latest data into terraform's state file so terraform can identify if
 // there are any differences between what the user has defined and what
 // actually exists in reality.
-func resourceRead(d *schema.ResourceData, m interface{}) error {
+func resourceRead(d *schema.ResourceData, m any) error {
 	log.Print("\n\n--- READ ---\n\n")
 	log.Printf("\n\n>>> schema.ResourceData: %+v\n\n", d)
 	log.Printf("\n\n>>> meta data: %+v\n\n", m)
@@ -230,17 +230,17 @@ func resourceRead(d *schema.ResourceData, m interface{}) error {
 	// 'version' attribute.
 
 	// In order to loop over foo, we need to cast it to the appropriate type
-	for _, f := range foo.([]interface{}) {
-		f := f.(map[string]interface{})
+	for _, f := range foo.([]any) {
+		f := f.(map[string]any)
 		log.Printf("\n\n>>> f: %+v (%T)\n\n", f, f)
 
 		// In order to loop over the nested bar, we need to cast it to the appropriate type
-		for _, b := range f["bar"].([]interface{}) {
+		for _, b := range f["bar"].([]any) {
 			log.Printf("\n\n>>> b: %+v (%T)\n\n", b, b)
 
 			// In order to update the 'version' field inside of 'bar', we need to
 			// cast bar to the appropriate type first
-			b := b.(map[string]interface{})
+			b := b.(map[string]any)
 			b["version"] = uuid.New().String()
 		}
 	}
@@ -259,7 +259,7 @@ func resourceRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceUpdate(d *schema.ResourceData, m interface{}) error {
+func resourceUpdate(d *schema.ResourceData, m any) error {
 	log.Print("\n\n--- UPDATE ---\n\n")
 	log.Printf("\n\n>>> schema.ResourceData: %+v\n\n", d)
 	log.Printf("\n\n>>> meta data: %+v\n\n", m)
@@ -270,21 +270,21 @@ func resourceUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Println("resourceID:", resourceID)
 
 	if d.HasChange("foo") {
-		foo := d.Get("foo").([]interface{})
+		foo := d.Get("foo").([]any)
 		log.Printf(">>> foo: %+v\n", foo)
 
 		// Imagine we made an API call to update the given resource.
 		//
 		// We'd do this by iterating over the foo we pulled out of our terraform
-		// state and coercing them into a type of map[string]interface{}
+		// state and coercing them into a type of map[string]any
 		//
 		// e.g.
 		//
 		// for _, f := range foo {
-		// 	i := f.(map[string]interface{})
+		// 	i := f.(map[string]any)
 		//
-		// 	t := i["bar"].([]interface{})[0]
-		// 	bar := t.(map[string]interface{})
+		// 	t := i["bar"].([]any)[0]
+		// 	bar := t.(map[string]any)
 		//
 		//  ...constructing data structure to pass to API...
 		//
@@ -303,7 +303,7 @@ func resourceUpdate(d *schema.ResourceData, m interface{}) error {
 	return resourceRead(d, m)
 }
 
-func resourceDelete(d *schema.ResourceData, m interface{}) error {
+func resourceDelete(d *schema.ResourceData, m any) error {
 	log.Print("\n\n--- DELETE ---\n\n")
 	log.Printf("\n\n>>> schema.ResourceData: %+v\n\n", d)
 	log.Printf("\n\n>>> meta data: %+v\n\n", m)

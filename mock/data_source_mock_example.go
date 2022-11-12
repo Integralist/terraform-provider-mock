@@ -34,7 +34,7 @@ func dataSourceExample() *schema.Resource {
 	}
 }
 
-func dataSourceExampleRead(d *schema.ResourceData, m interface{}) error {
+func dataSourceExampleRead(d *schema.ResourceData, m any) error {
 	fmt.Printf("ResourceData: %+v\n", d)
 
 	// We'll create some stubbed data as if we had made an actual API call and
@@ -48,7 +48,7 @@ func dataSourceExampleRead(d *schema.ResourceData, m interface{}) error {
 
 	// In order for us to store the returned data into terraform we need to
 	// marshal the data into a format that matches what the schema expects.
-	things := make([]map[string]interface{}, 0)
+	things := make([]map[string]any, 0)
 	err := json.NewDecoder(strings.NewReader(jsonStream)).Decode(&things)
 	if err != nil {
 		return err

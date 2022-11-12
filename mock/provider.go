@@ -51,7 +51,7 @@ func Provider() *schema.Provider {
 		},
 
 		// To configure the provider (i.e. create an API client)
-		// then pass ConfigureFunc. The interface{} value returned by this function
+		// then pass ConfigureFunc. The any value returned by this function
 		// is stored and passed into the subsequent resources as the meta
 		// parameter (this includes Data Sources as they are subsets of Resources).
 		//
