@@ -14,3 +14,9 @@ validate-docs: install-tools
 
 build:
 	go build -o terraform-provider-mock
+
+# bump go.mod dependencies
+bump:
+	go get -u ./...
+	go mod tidy
+	go mod vendor
